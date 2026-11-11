@@ -61,9 +61,6 @@ b,strong{font-weight:700}
 /* ---------- 머리: 평평한 편지지와 소인 ---------- */
 .hero{background:var(--hero);border-bottom:1.5px dashed var(--line-strong)}
 .demo-banner{margin:0;padding:8px 16px;background:var(--accent-soft);color:var(--accent-ink);text-align:center;font-size:.85rem;font-weight:700}
-.demo-classes{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 20px}
-.demo-classes[hidden]{display:none}
-.demo-classes a[aria-current="page"]{background:var(--accent-soft);color:var(--accent-ink)}
 .hero .wrap{position:relative;padding-block:30px 24px}
 .hero .wrap > p{position:relative}
 .stamp{position:absolute;top:16px;right:16px;width:130px;height:auto;color:#F2A680;transform:rotate(9deg);pointer-events:none}
@@ -343,7 +340,6 @@ select:focus,input[type="text"]:focus{border-color:var(--accent);outline:none;bo
 <main class="wrap">
   <!-- 응원 -->
   <section role="tabpanel" id="wall" aria-labelledby="tab-wall">
-    <nav class="demo-classes" aria-label="응원 벽 선택" hidden></nav>
     <h2>선생님, 후배, 부모님이 보낸 편지</h2>
     <p class="lede">편지가 어떻게 보이는지 테스트 편지로 살펴보세요. <span id="wall-count"></span></p>
     <p class="write" id="write" hidden><a class="btn primary" id="write-link" href="#" target="_blank" rel="noopener"><svg viewBox="0 0 24 24"><path d="M4 20h4L19 9l-4-4L4 16z"/><path d="M13.5 6.5l4 4"/></svg>테스트 편지 남기기</a><span>별칭과 예시 문구를 사용해 주세요.</span></p>
@@ -518,16 +514,6 @@ select:focus,input[type="text"]:focus{border-color:var(--accent);outline:none;bo
   var fm = /\/forms\/d\/e\/(1FAIpQL[A-Za-z0-9_-]+)\/viewform/.exec(SC.form || "");
   var CFG = { s: sm ? sm[1] : "", g: gm ? gm[1] : "", f: fm ? fm[1] : "", n: txt(classPage ? classPage.name : SC.name, 30), m: txt(classPage ? classPage.message : SC.message, 90), w: txt(classPage ? classPage.sign : SC.sign, 15) };
   if (Object.keys(classes).length) {
-    var classNav = $(".demo-classes");
-    [""].concat(Object.keys(classes)).forEach(function (id) {
-      var link = document.createElement("a");
-      link.className = "btn";
-      link.href = id ? "?class=" + encodeURIComponent(id) : "./";
-      link.textContent = id ? classes[id].name : "공통 응원";
-      if (id === classId) link.setAttribute("aria-current", "page");
-      classNav.appendChild(link);
-    });
-    classNav.hidden = false;
     $("#write span").textContent = "폼에서 받는 반을 골라 주세요. 별칭과 예시 문구를 사용해 주세요.";
   }
   var SHEET_CSV = CFG.s && CFG.g ? "https://docs.google.com/spreadsheets/d/e/" + CFG.s + "/pub?gid=" + CFG.g + "&single=true&output=csv" : "";
