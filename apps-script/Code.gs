@@ -21,6 +21,7 @@ function onOpen() {
     .createMenu('수능 응원')
     .addItem('설문 만들기', 'createCheerForm')
     .addItem('설문 주소 다시 보기', 'showFormLinks')
+    .addItem('반별 링크 관리', 'openClassManager')
     .addToUi();
 }
 
