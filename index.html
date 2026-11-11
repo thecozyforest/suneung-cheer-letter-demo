@@ -528,7 +528,7 @@ select:focus,input[type="text"]:focus{border-color:var(--accent);outline:none;bo
       classNav.appendChild(link);
     });
     classNav.hidden = false;
-    $("#write span").textContent = "테스트 편지는 공통 응원으로 받아요. 별칭과 예시 문구를 사용해 주세요.";
+    $("#write span").textContent = "폼에서 받는 반을 골라 주세요. 별칭과 예시 문구를 사용해 주세요.";
   }
   var SHEET_CSV = CFG.s && CFG.g ? "https://docs.google.com/spreadsheets/d/e/" + CFG.s + "/pub?gid=" + CFG.g + "&single=true&output=csv" : "";
   if (CFG.f) {
@@ -957,9 +957,25 @@ select:focus,input[type="text"]:focus{border-color:var(--accent);outline:none;bo
       .then(function (txt) {
         if (txt === lastData) return;
         lastData = txt;
-        var list = parseCSV(txt).slice(1)
+        var rows = parseCSV(txt);
+        var targetColumn = (rows[0] || []).indexOf("target");
+        var list = rows.slice(1)
           .filter(function (r) { return r[1] && r[1].trim(); })
-          .map(function (r) { var g = (r[3] || "").trim(); return { from: (r[0] || "").trim(), text: r[1].trim(), type: (r[2] || "").trim(), group: GNAME[g] ? g : "other", scope: demoLetters.length ? "공통 응원" : "" }; });
+          .map(function (r) {
+            var group = (r[3] || "").trim();
+            var target = targetColumn < 0 ? "all" : (r[targetColumn] || "").trim();
+            return {
+              from: (r[0] || "").trim(),
+              text: r[1].trim(),
+              type: (r[2] || "").trim(),
+              group: Object.prototype.hasOwnProperty.call(GNAME, group) ? group : "other",
+              target: target,
+              scope: target === "all" ? (demoLetters.length ? "공통 응원" : "") : CFG.n + " 응원"
+            };
+          })
+          .filter(function (letter) {
+            return letter.target === "all" || (classPage && letter.target === classId);
+          });
         before = list.filter(function (m) { return m.type !== "after"; });
         afterM = list.filter(function (m) { return m.type === "after"; });
         loaded = true; failed = false;
