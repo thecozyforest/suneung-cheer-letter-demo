@@ -506,13 +506,20 @@ select:focus,input[type="text"]:focus{border-color:var(--accent);outline:none;bo
   /* ---------- 학교 설정: config.js 의 window.SCHOOL 에서 읽음 ---------- */
   var SC = window.SCHOOL || {};
   var classes = SC.classes || {};
-  var requestedClass = new URLSearchParams(window.location.search).get("class");
-  var classId = Object.prototype.hasOwnProperty.call(classes, requestedClass) ? requestedClass : "";
-  var classPage = classes[classId];
+  var pageParams = new URLSearchParams(window.location.search);
+  var requestedClass = pageParams.get("class") || "";
+  var classId = /^[1-9][0-9]?$/.test(requestedClass) ? requestedClass : "";
+  var classPage = classes[classId] || {};
+  var className = classId ? (classPage.name || "3학년 " + classId + "반") : "";
   function txt(v, max) { v = String(v || "").replace(/[<>]/g, "").trim(); return v.length > max ? v.slice(0, max) : v; }
+  var schoolName = txt(pageParams.get("school"), 30) || txt(SC.name, 30);
   var sm = /\/spreadsheets\/d\/e\/(2PACX-[A-Za-z0-9_-]+)\/pub/.exec(SC.sheet || ""), gm = /[?&]gid=([0-9]+)/.exec(SC.sheet || "");
   var fm = /\/forms\/d\/e\/(1FAIpQL[A-Za-z0-9_-]+)\/viewform/.exec(SC.form || "");
-  var CFG = { s: sm ? sm[1] : "", g: gm ? gm[1] : "", f: fm ? fm[1] : "", n: txt(classPage ? classPage.name : SC.name, 30), m: txt(classPage ? classPage.message : SC.message, 90), w: txt(classPage ? classPage.sign : SC.sign, 15) };
+  var CFG = {
+    s: sm ? sm[1] : "", g: gm ? gm[1] : "", f: fm ? fm[1] : "",
+    m: txt(pageParams.get("message"), 90) || txt(classPage.message || SC.message, 90),
+    w: txt(pageParams.get("sign"), 15) || txt(classPage.sign || SC.sign, 15)
+  };
   if (Object.keys(classes).length) {
     $("#write span").textContent = "폼에서 받는 반을 골라 주세요. 별칭과 예시 문구를 사용해 주세요.";
   }
@@ -521,11 +528,12 @@ select:focus,input[type="text"]:focus{border-color:var(--accent);outline:none;bo
     $("#write-link").href = "https://docs.google.com/forms/d/e/" + CFG.f + "/viewform";
     $("#write").hidden = false;
   }
-  if (CFG.n) {
-    var eb = $(".eyebrow"), sp = document.createElement("span");
-    sp.textContent = CFG.n;
-    eb.insertBefore(sp, eb.firstChild);
-    document.title = CFG.n + " · " + document.title;
+  var pageName = [schoolName, className].filter(Boolean).join(" ");
+  if (pageName) {
+    var eyebrow = $(".eyebrow"), nameLabel = document.createElement("span");
+    nameLabel.textContent = pageName;
+    eyebrow.insertBefore(nameLabel, eyebrow.firstChild);
+    document.title = pageName + " · " + document.title;
   }
 
   /* ---------- 시각 ---------- */
@@ -627,7 +635,7 @@ select:focus,input[type="text"]:focus{border-color:var(--accent);outline:none;bo
   });
   shownDefault = defaultTab(now());
   if (!fromHash()) {
-    if (classPage) pick("wall");
+    if (classId || pageParams.has("message") || pageParams.has("sign")) pick("wall");
     else show(shownDefault);
   }
 
@@ -905,7 +913,7 @@ select:focus,input[type="text"]:focus{border-color:var(--accent);outline:none;bo
   ].map(function (m) { m.sample = true; m.type = "before"; return m; });
   var demoLetters = [];
   if (SC.commonSample) demoLetters.push(Object.assign({ sample: true, scope: "공통 응원" }, SC.commonSample));
-  if (classPage) demoLetters.push(Object.assign({ sample: true, scope: classPage.name + " 응원" }, classPage.letter));
+  if (classPage.letter) demoLetters.push(Object.assign({ sample: true, scope: className + " 응원" }, classPage.letter));
   function sampleWall(note) {
     $("#wall-count").textContent = "";
     $("#wall-list").innerHTML = '<p class="sample-note"><b>예시 편지예요.</b> ' + note + "</p>" + cards(SAMPLES, "wall");
@@ -956,11 +964,11 @@ select:focus,input[type="text"]:focus{border-color:var(--accent);outline:none;bo
               type: (r[2] || "").trim(),
               group: Object.prototype.hasOwnProperty.call(GNAME, group) ? group : "other",
               target: target,
-              scope: target === "all" ? (demoLetters.length ? "공통 응원" : "") : CFG.n + " 응원"
+              scope: target === "all" ? (demoLetters.length ? "공통 응원" : "") : className + " 응원"
             };
           })
           .filter(function (letter) {
-            return letter.target === "all" || (classPage && letter.target === classId);
+            return letter.target === "all" || (classId !== "" && letter.target === classId);
           });
         before = list.filter(function (m) { return m.type !== "after"; });
         afterM = list.filter(function (m) { return m.type === "after"; });

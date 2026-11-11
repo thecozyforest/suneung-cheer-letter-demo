@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>수능 응원 페이지 설정 만들기</title>
-<meta name="description" content="구글 시트와 설문 주소를 붙여 넣으면 우리 학교 수능 응원 페이지의 설정 파일 내용을 만들어 줘요.">
+<meta name="description" content="학교 이름, 반 번호, 응원 문구와 서명을 담은 수능 응원 링크를 만들어요.">
 <meta name="theme-color" content="#FFF1E4">
 <link rel="icon" type="image/svg+xml" href="favicon.svg">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
@@ -51,15 +51,52 @@ pre{font:500 .82rem/1.6 ui-monospace,Consolas,monospace;background:#fff;border:1
 <header>
   <div class="wrap">
     <p class="eyebrow">2027학년도 수능 응원 페이지</p>
-    <h1>설정 만들기</h1>
-    <p class="lede">구글 시트와 설문 주소를 붙여 넣으면 <b>config.js</b>에 넣을 내용을 만들어 드려요. 전체 순서는 <a href="guide.html">사용설명서</a>를 봐 주세요.</p>
+    <h1>수능 응원 링크 만들기</h1>
+    <p class="lede">학교 이름이나 담임 선생님의 응원 문구를 넣어 학생들에게 보낼 링크를 만들어요.</p>
   </div>
 </header>
 
 <main class="wrap">
+  <section class="card" aria-labelledby="share-heading">
+    <h2 id="share-heading">학생들에게 보낼 링크</h2>
+    <form id="share-form">
+      <div class="field">
+        <label for="share-school">학교 이름 (선택)</label>
+        <input type="text" id="share-school" maxlength="30" placeholder="예) ○○고등학교" autocomplete="off">
+      </div>
+      <div class="field">
+        <label for="share-class">반 번호 (선택)</label>
+        <input type="text" id="share-class" inputmode="numeric" maxlength="2" pattern="[1-9][0-9]?" placeholder="예) 4" aria-describedby="share-class-hint" autocomplete="off">
+        <span class="hint" id="share-class-hint">숫자만 적어 주세요. 비워 두면 3학년 전체에 보낼 링크가 만들어져요.</span>
+      </div>
+      <div class="field">
+        <label for="share-message">첫 화면 응원 문구 (선택)</label>
+        <input type="text" id="share-message" maxlength="90" placeholder="예) 얘들아, 너희가 해 온 시간을 믿고 다녀와." aria-describedby="share-message-hint" autocomplete="off">
+        <span class="hint" id="share-message-hint">문구에 / 를 넣으면 그 자리에서 줄이 바뀌어요.</span>
+      </div>
+      <div class="field">
+        <label for="share-sign">서명 (선택)</label>
+        <input type="text" id="share-sign" maxlength="15" placeholder="예) ○○○ 선생님이" autocomplete="off">
+      </div>
+      <p class="hint" style="font-size:.85rem;color:var(--muted)">입력한 문구와 서명은 링크에 담겨요. 학생들에게 공개할 내용만 적어 주세요.</p>
+      <button type="submit" class="btn primary">링크 만들기</button>
+    </form>
+    <div class="result" id="share-result" style="margin-top:16px" hidden>
+      <div class="field">
+        <label for="share-url">공유 링크</label>
+        <input type="url" id="share-url" readonly>
+      </div>
+      <div class="row">
+        <button type="button" class="btn primary" id="share-copy">링크 복사</button>
+        <a class="btn" id="share-preview" target="_blank" rel="noopener">학생 화면 미리보기</a>
+      </div>
+      <p class="status" id="share-status" role="status"></p>
+    </div>
+  </section>
+
   <section class="card">
-    <h2>주소 붙여 넣기</h2>
-    <p class="lede" style="margin:0 0 16px;font-size:.9rem">입력한 내용은 이 화면에서만 쓰이고 어디에도 저장되지 않아요.</p>
+    <h2>구글폼과 시트 연결</h2>
+    <p class="lede" style="margin:0 0 16px;font-size:.9rem">학교의 응답 시트를 처음 연결할 때 쓰는 설정이에요. <a href="guide.html">사용설명서</a></p>
     <div class="field">
       <label for="csv">「공개용」 탭을 웹에 게시한 주소 (필수)</label>
       <input type="url" id="csv" placeholder="https://docs.google.com/spreadsheets/d/e/2PACX-…/pub?gid=…&amp;single=true&amp;output=csv" autocomplete="off">
@@ -103,6 +140,32 @@ pre{font:500 .82rem/1.6 ui-monospace,Consolas,monospace;background:#fff;border:1
 (function () {
   "use strict";
   var $ = function (id) { return document.getElementById(id); };
+  var shareForm = $("share-form"), shareResult = $("share-result");
+  var shareUrl = $("share-url"), shareStatus = $("share-status");
+  shareForm.addEventListener("input", function () { shareResult.hidden = true; });
+  shareForm.addEventListener("submit", function (event) {
+    event.preventDefault();
+    var url = new URL("./", window.location.href);
+    ["class", "school", "message", "sign"].forEach(function (key) {
+      var value = $("share-" + key).value.trim();
+      if (value) url.searchParams.set(key, value);
+    });
+    shareUrl.value = url.href;
+    $("share-preview").href = url.href;
+    shareStatus.textContent = "";
+    shareResult.hidden = false;
+  });
+  $("share-copy").addEventListener("click", async function () {
+    try {
+      await navigator.clipboard.writeText(shareUrl.value);
+      shareStatus.textContent = "링크를 복사했어요.";
+    } catch (error) {
+      shareUrl.focus();
+      shareUrl.select();
+      shareStatus.textContent = "주소를 선택했어요. 복사해서 보내 주세요.";
+    }
+  });
+
   function sheetIds(v) {
     var m = /\/spreadsheets\/d\/e\/(2PACX-[A-Za-z0-9_-]+)\/pub/.exec(v), g = /[?&]gid=([0-9]+)/.exec(v);
     return m && g ? { s: m[1], g: g[1] } : null;
