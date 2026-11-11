@@ -3,13 +3,13 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>수능 날, 곁에서 응원할게요</title>
-<meta name="description" content="선생님과 후배, 부모님이 쓴 응원 편지를 읽어 보세요. 수능 날 준비물과 시간표도 함께 담았어요.">
+<title>수능 응원 편지 데모</title>
+<meta name="description" content="테스트 편지와 수능 당일 안내를 볼 수 있는 수능 응원 페이지 데모입니다.">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="2027학년도 수능 응원">
-<meta property="og:title" content="수능 날, 곁에서 응원할게요">
-<meta property="og:description" content="선생님과 후배, 부모님이 쓴 응원 편지를 읽어 보세요. 수능 날 준비물과 시간표도 함께 담았어요.">
-<meta property="og:image" content="https://dossamlab.github.io/suneung-cheer-kit/og.png">
+<meta property="og:title" content="수능 응원 편지 데모">
+<meta property="og:description" content="테스트 편지와 수능 당일 안내를 볼 수 있는 수능 응원 페이지 데모입니다.">
+<meta property="og:image" content="https://thecozyforest.github.io/suneung-cheer-letter-demo/og.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
@@ -60,6 +60,7 @@ b,strong{font-weight:700}
 
 /* ---------- 머리: 평평한 편지지와 소인 ---------- */
 .hero{background:var(--hero);border-bottom:1.5px dashed var(--line-strong)}
+.demo-banner{margin:0;padding:8px 16px;background:var(--accent-soft);color:var(--accent-ink);text-align:center;font-size:.85rem;font-weight:700}
 .hero .wrap{position:relative;padding-block:30px 24px}
 .hero .wrap > p{position:relative}
 .stamp{position:absolute;top:16px;right:16px;width:130px;height:auto;color:#F2A680;transform:rotate(9deg);pointer-events:none}
@@ -303,6 +304,7 @@ select:focus,input[type="text"]:focus{border-color:var(--accent);outline:none;bo
 </head>
 <body>
 
+<p class="demo-banner">수능 응원 편지 데모</p>
 <header class="hero" id="hero" data-tab="wall">
   <div class="wrap">
     <svg class="stamp" viewBox="0 0 170 120" aria-hidden="true">
@@ -339,8 +341,8 @@ select:focus,input[type="text"]:focus{border-color:var(--accent);outline:none;bo
   <!-- 응원 -->
   <section role="tabpanel" id="wall" aria-labelledby="tab-wall">
     <h2>선생님, 후배, 부모님이 보낸 편지</h2>
-    <p class="lede">함께 지낸 사람들이 한 장씩 써서 붙였어요. <span id="wall-count"></span></p>
-    <p class="write" id="write" hidden><a class="btn primary" id="write-link" href="#" target="_blank" rel="noopener"><svg viewBox="0 0 24 24"><path d="M4 20h4L19 9l-4-4L4 16z"/><path d="M13.5 6.5l4 4"/></svg>편지 남기기</a><span>선생님, 후배, 학부모님 누구나 쓸 수 있어요.</span></p>
+    <p class="lede">편지가 어떻게 보이는지 테스트 편지로 살펴보세요. <span id="wall-count"></span></p>
+    <p class="write" id="write" hidden><a class="btn primary" id="write-link" href="#" target="_blank" rel="noopener"><svg viewBox="0 0 24 24"><path d="M4 20h4L19 9l-4-4L4 16z"/><path d="M13.5 6.5l4 4"/></svg>테스트 편지 남기기</a><span>별칭과 예시 문구를 사용해 주세요.</span></p>
     <div id="wall-list"></div>
   </section>
 
@@ -487,7 +489,7 @@ select:focus,input[type="text"]:focus{border-color:var(--accent);outline:none;bo
     </div>
   </section>
 
-  <p class="foot"><span class="hand">여러분의 내일을 늘 응원해요</span>시간표와 유의사항은 한국교육과정평가원 「2027학년도 대학수학능력시험 시행세부계획 공고」(2026. 7. 1.)와 교육부 수험생 유의사항을 따랐어요.<br>시험장에서 감독관의 안내가 다르면 감독관 안내를 따라요.<br><a href="make.html">설정 만들기</a></p>
+  <p class="foot"><span class="hand">여러분의 내일을 늘 응원해요</span>시간표와 유의사항은 한국교육과정평가원 「2027학년도 대학수학능력시험 시행세부계획 공고」(2026. 7. 1.)와 교육부 수험생 유의사항을 따랐어요.<br>시험장에서 감독관의 안내가 다르면 감독관 안내를 따라요.<br><a href="https://github.com/dossamlab/suneung-cheer-kit">도쌤의 원본 템플릿</a></p>
 </main>
 
 <script src="config.js"></script>

@@ -5,10 +5,10 @@
 */
 window.SCHOOL = {
   /* 필수: 시트의 「공개용」 탭을 웹에 게시한 주소 (…output=csv 로 끝나는 주소) */
-  sheet: "",
+  sheet: "https://docs.google.com/spreadsheets/d/e/2PACX-1vQ0fDCUza_YyL9M-ENahuj-B6wrSZRI1iiy8Id6eRvzxefLJYkiV_d2-xdPy5Uobxrlkp76GiFBsCqP/pub?gid=1586721779&single=true&output=csv",
 
   /* 필수: 설문 응답자 링크 (…/viewform 로 끝나는 긴 주소) */
-  form: "",
+  form: "https://docs.google.com/forms/d/e/1FAIpQLScn4-GCSMgHo65Ut0sMFcS7CXjA6_2oTZi4PXbC7AVE9AT9Qg/viewform",
 
   /* 선택: 학교 이름. 맨 위에 작게 나와요. 예: "○○고등학교" */
   name: "",
